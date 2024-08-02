@@ -8,15 +8,14 @@ import {AggregatorV3Interface} from
 // Base Sepolia ETH/USD price feed: 0x4aDC67696bA383F43DD60A9e78F2C97Fbbfc7cb1
 
 library PriceConverter {
-    function getPrice() internal view returns (uint256) {
-        AggregatorV3Interface priceFeed = AggregatorV3Interface(0x4aDC67696bA383F43DD60A9e78F2C97Fbbfc7cb1);
+    function getPrice(AggregatorV3Interface priceFeed) internal view returns (uint256) {
         (, int256 answer,,,) = priceFeed.latestRoundData();
         // Price of ETH in terms of USD
         return uint256(answer * 1e10);
     }
 
-    function getConversionRate(uint256 ethAmount) internal view returns (uint256) {
-        uint256 ethPrice = getPrice();
+    function getConversionRate(uint256 ethAmount, AggregatorV3Interface priceFeed) internal view returns (uint256) {
+        uint256 ethPrice = getPrice(priceFeed);
         uint256 ethAmountInUsd = (ethPrice * ethAmount) / 1e18;
         return ethAmountInUsd;
     }
