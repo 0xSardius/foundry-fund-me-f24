@@ -9,7 +9,7 @@ pragma solidity ^0.8.18;
 
 import {Script} from "forge-std/Script.sol";
 
-contract HelperConfig {
+contract HelperConfig is Script {
     // If we are on a local anvil chain, deploy mocks
     // Otherwise grab the existing address from the live network
     NetworkConfig public activeNetworkConfig;
@@ -19,10 +19,12 @@ contract HelperConfig {
     }
 
     constructor() {
-        if (block.chainid == 11155111) {
-            activeNetworkConfig
-        } else {
+        if (block.chainid == 84532) {
             activeNetworkConfig = getBaseSepoliaEthConfig();
+        } else if (block.chainid == 11155111) {
+            activeNetworkConfig = getSepoliaEthConfig();
+        } else {
+            activeNetworkConfig = getAnvilEthConfig();
         }
     }
 
@@ -33,8 +35,20 @@ contract HelperConfig {
         return baseSepoliaConfig;
     }
 
-    function getAnvilEthConfig() public pure returns (NetworkConfig memory) {
+    function getSepoliaEthConfig() public pure returns(NetworkConfig memory) {
         // price feed address
-       // price feed address
+        // structs you can use brackets to denote type, you don't have to use them
+        NetworkConfig memory sepoliaConfig = NetworkConfig({priceFeed: 0x694AA1769357215DE4FAC081bf1f309aDC325306});
+        return sepoliaConfig;
+    }
+
+    function getAnvilEthConfig() public returns (NetworkConfig memory) {
+        // price feed address
+       // deploy the mocks
+       // return the mock address
+
+       vm.startBroadcast();
+
+        vm.stopBroadcast();
     }
 }
