@@ -30,31 +30,34 @@ contract HelperConfig is Script {
         } else if (block.chainid == SEPOLIA_CHAIN_ID) {
             activeNetworkConfig = getSepoliaEthConfig();
         } else {
-            activeNetworkConfig = getAnvilEthConfig();
+            activeNetworkConfig = getOrCreateAnvilEthConfig();
         }
     }
 
-    function getBaseSepoliaEthConfig() public pure returns(NetworkConfig memory) {
+    function getBaseSepoliaEthConfig() public pure returns (NetworkConfig memory) {
         // price feed address
         // structs you can use brackets to denote type, you don't have to use them
         NetworkConfig memory baseSepoliaConfig = NetworkConfig({priceFeed: 0x4aDC67696bA383F43DD60A9e78F2C97Fbbfc7cb1});
         return baseSepoliaConfig;
     }
 
-    function getSepoliaEthConfig() public pure returns(NetworkConfig memory) {
+    function getSepoliaEthConfig() public pure returns (NetworkConfig memory) {
         // price feed address
         // structs you can use brackets to denote type, you don't have to use them
         NetworkConfig memory sepoliaConfig = NetworkConfig({priceFeed: 0x694AA1769357215DE4FAC081bf1f309aDC325306});
         return sepoliaConfig;
     }
 
-    function getAnvilEthConfig() public returns (NetworkConfig memory) {
+    function getOrCreateAnvilEthConfig() public returns (NetworkConfig memory) {
         // price feed address
        // deploy the mocks
        // return the mock address
 
-       vm.startBroadcast();
-         MockV3Aggregator mockPriceFeed = new MockV3Aggregator(DECIMALS, INITIAL_PRICE);
+        if (activeNetworkConfig.priceFeed != address(0)) {
+            return activeNetworkConfig;
+        }
+        vm.startBroadcast();
+        MockV3Aggregator mockPriceFeed = new MockV3Aggregator(DECIMALS, INITIAL_PRICE);
         vm.stopBroadcast();
 
         NetworkConfig memory anvilConfig = NetworkConfig({priceFeed: address(mockPriceFeed)});

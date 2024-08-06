@@ -8,7 +8,6 @@ import {HelperConfig} from "./HelperConfig.s.sol";
 
 contract DeployFundMe is Script {
     function run() public returns (FundMe) {
-
         // Before start broadcast is not a real tx
         HelperConfig helperConfig = new HelperConfig();
         (address baseSepoliaEthPriceFeed) = helperConfig.activeNetworkConfig();
